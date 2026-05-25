@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>100天增肌減脂終極全能教練 V4</title>
+    <title>100天增肌減脂動態定製教練 V5</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="100天終極App">
+    <meta name="apple-mobile-web-app-title" content="100天自定版">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
 
     <style>
@@ -26,7 +26,7 @@
         .container { max-width: 600px; margin: 0 auto; background: #1e1e1e; padding: 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         h1 { text-align: center; color: #ff9f43; font-size: 1.4em; margin: 5px 0; }
         
-        /* 進度條樣式 */
+        /* 進度條 */
         .progress-container { background: #2d2d2d; border-radius: 10px; padding: 12px; margin-bottom: 15px; }
         .progress-bar-bg { background: #444; width: 100%; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 5px; }
         .progress-bar-fill { background: linear-gradient(90deg, #10ac84, #00d2d3); width: 1%; height: 100%; transition: width 0.5s ease; }
@@ -35,30 +35,31 @@
         .day-counter { background: linear-gradient(45deg, #ee5253, #feca57); padding: 12px; border-radius: 12px; text-align: center; font-size: 1.2em; font-weight: bold; color: white; margin-bottom: 15px; }
         .routine-box { background: #2d2d2d; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 5px solid #10ac84; }
         
-        /* 行動按鈕 */
         .hevy-btn { display: inline-block; width: 100%; text-align: center; background: #00a8ff; color: white; padding: 10px; border-radius: 8px; font-weight: bold; text-decoration: none; margin-top: 10px; box-sizing: border-box; }
         .flex-row { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 15px; }
         button.action-btn { flex: 1; padding: 10px; font-size: 0.85em; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
         
-        /* 時間表與打勾互動 */
+        /* 時間表與自定義互動 */
         .time-slot { display: flex; align-items: center; padding: 12px; background: #252525; margin-bottom: 6px; border-radius: 8px; border-right: 3px solid transparent; transition: all 0.3s ease; }
-        .time-slot.completed { opacity: 0.4; border-right-color: #10ac84 !important; }
+        .time-slot.completed { opacity: 0.3; border-right-color: #10ac84 !important; }
         .time-slot.completed .task-title { text-decoration: line-through; }
         .time-slot.water { border-right-color: #54a0ff; }
         .time-slot.supplement { border-right-color: #ff9f43; }
         .time-slot.cardio { border-right-color: #ff6b6b; }
         .time-slot.breakfast { border-right-color: #ffeaa7; }
+        .time-slot.custom { border-right-color: #a29bfe; }
         
-        .time { color: #ff9f43; font-weight: bold; min-width: 60px; font-size: 0.95em; }
+        .time { color: #ff9f43; font-weight: bold; min-width: 55px; font-size: 0.95em; }
         .task-content { flex-grow: 1; margin-left: 10px; font-size: 0.85em; line-height: 1.4; }
-        .checkbox-container { min-width: 30px; text-align: right; }
-        .checkbox-container input { width: 20px; height: 20px; accent-color: #10ac84; }
+        .controls-container { display: flex; align-items: center; gap: 12px; }
+        .checkbox-container input { width: 22px; height: 22px; accent-color: #10ac84; cursor: pointer; }
+        .delete-task-btn { background: #ee5253; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.75em; cursor: pointer; }
 
         /* 數據登記 */
         .tracker-section { background: #2d2d2d; padding: 12px; border-radius: 10px; margin-bottom: 15px; }
         .tracker-section h4 { margin: 0 0 10px 0; font-size: 0.95em; color: #ff9f43; }
         .input-group { display: flex; gap: 10px; margin-bottom: 10px; }
-        .input-group input[type="number"] { flex: 1; background: #1a1a1a; border: 1px solid #444; color: white; padding: 8px; border-radius: 6px; }
+        .input-group input, .input-group select { flex: 1; background: #1a1a1a; border: 1px solid #444; color: white; padding: 8px; border-radius: 6px; font-size: 0.9em; }
         .input-group button, .file-label { background: #10ac84; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; font-size: 0.85em; cursor: pointer; text-align: center; }
         
         /* 照片牆 */
@@ -66,9 +67,7 @@
         .photo-slot { min-width: 75px; height: 100px; background: #1a1a1a; border-radius: 6px; overflow: hidden; position: relative; border: 1px dashed #555; text-align: center; font-size: 0.7em; color: #888; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .photo-slot img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; }
         
-        /* 歷史體重紀錄 */
         .weight-history { max-height: 80px; overflow-y: auto; font-size: 0.8em; color: #b2bec3; background: #1a1a1a; padding: 6px; border-radius: 6px; }
-
         .day-btn-container { display: flex; justify-content: space-between; margin-top: 15px; }
         .day-btn { width: 48%; background: #3d3d3d; padding: 10px; font-size: 0.9em; color: white; border: none; border-radius: 8px; }
         .meal-prep-tip { background: #222f3e; padding: 10px; border-radius: 8px; font-size: 0.85em; color: #00d2d3; margin-bottom: 15px; text-align: center; border: 1px dashed #00d2d3; }
@@ -77,7 +76,7 @@
 <body>
 
 <div class="container">
-    <h1>🏋️‍♂️ 終極全能教練 & 營養師 V4</h1>
+    <h1>🏋️‍♂️ 增肌減脂動態全能教練 V5</h1>
     
     <div class="progress-container">
         <div style="display: flex; justify-content: space-between; font-size: 0.85em;">
@@ -85,15 +84,24 @@
             <span id="currentPhaseLabel">適應期</span>
         </div>
         <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressBar"></div></div>
-        <div class="phase-text" id="phasePrediction">載入中階段預測...</div>
+        <div class="phase-text" id="phasePrediction">載入中...</div>
     </div>
 
     <div class="day-counter" id="dayDisplay">100天計劃：第 1 天</div>
     
     <div class="flex-row">
-        <button class="action-btn" style="background:#ff9f43;" onclick="requestPermission()">🔔 開啟智能通知</button>
-        <button class="action-btn" style="background:#ee5253;" onclick="triggerMidnightCheck()">🌙 手動午夜結算</button>
-        <button class="action-btn" style="background:#2ed573;" onclick="toggleCheatDay()">🍕 轉移大餐/Cheat</button>
+        <button class="action-btn" style="background:#ff9f43;" onclick="requestPermission()">🔔 智能通知</button>
+        <button class="action-btn" style="background:#ee5253;" onclick="triggerMidnightCheck()">🌙 午夜結算</button>
+        <button class="action-btn" style="background:#2ed573;" onclick="toggleCheatDay()">🍕 轉移大餐</button>
+    </div>
+
+    <div class="tracker-section" style="border: 1px solid #a29bfe;">
+        <h4 style="color: #a29bfe;">📝 在畫面上直接「新增自定義 Checklist」</h4>
+        <div class="input-group">
+            <input type="text" id="customTime" placeholder="時間 (例如 14:30)" style="max-width: 110px;">
+            <input type="text" id="customTitle" placeholder="任務 (例如 食堅果/拉筋)">
+            <button onclick="addCustomTask()" style="background: #a29bfe;">➕ 新增</button>
+        </div>
     </div>
 
     <div class="tracker-section">
@@ -171,48 +179,63 @@
     ];
 
     const weeklyDiets = [
-        { prep: "【日/三晚上備餐】煎雞胸肉切塊 + 水煮西蘭花 + 蒸蕃薯（分裝多盒，出門只需微波5分鐘）", menu: "☀️ 午餐：去皮海南雞飯（少飯）+ 白灼菜心\n🌙 晚餐：香煎雞胸肉 + 西蘭花 + 蒸蕃薯" },
-        { prep: "【日/三晚上備餐】蒜蓉炒牛肉片 + 炒雜菇 + 糙米飯（批量備好，節省工作日時間）", menu: "☀️ 午餐：滑蛋蝦仁飯（少飯）+ 蒜茸西蘭花\n🌙 晚餐：黑椒牛柳炒雜菇 + 糙米飯" },
+        { prep: "【日/三晚上備餐】煎雞胸肉切塊 + 水煮西蘭花 + 蒸蕃薯（分裝多盒）", menu: "☀️ 午餐：去皮海南雞飯（少飯）+ 白灼菜心\n🌙 晚餐：香煎雞胸肉 + 西蘭花 + 蒸蕃薯" },
+        { prep: "【日/三晚上備餐】蒜蓉炒牛肉片 + 炒雜菇 + 糙米飯（批量備好）", menu: "☀️ 午餐：滑蛋蝦仁飯（少飯）+ 蒜茸西蘭花\n🌙 晚餐：黑椒牛柳炒雜菇 + 糙米飯" },
         { prep: "【日/三晚上備餐】香煎三文魚扒 + 水煮蘆筍 + 烤南瓜（高品質脂肪備餐）", menu: "☀️ 午餐：外食選擇 - 切雞燒肉飯（去皮/少飯）\n🌙 晚餐：香煎三文魚扒 + 水煮蘆筍 + 烤南瓜" },
         { prep: "【日/三晚上備餐】蒸鱸魚菲力 + 炒椰菜 + 蒸薯仔（清淡高蛋白循環）", menu: "☀️ 午餐：鮮牛肉湯米粉 + 灼芥蘭（不加羗蔥）\n🌙 晚餐：清蒸鱸魚菲力 + 清炒椰菜 + 蒸薯仔" }
     ];
 
-    const dailySchedule = [
-        { id: "c1", time: "07:00", type: "commute", title: "⏰ 起床準備", body: "準備出門！今天也是充满力量的一天。" },
+    // 原始預設時間表核心資料
+    const defaultScheduleBase = [
+        { id: "c1", time: "07:00", type: "commute", title: "⏰ 起床準備", body: "準備出門！今天也是充滿力量的一天。" },
         { id: "c2", time: "07:30", type: "commute", title: "🚶 準時出門口", body: "準時出發去公司附近的健身室。" },
         { id: "c3", time: "08:30", type: "cardio", title: "🏃 30分鐘空腹 Cardio", body: "抵達健身室！開始有氧燃脂（週六日自動跳過）。" },
-        { id: "c4", time: "09:30", type: "breakfast", title: "🍳 減脂早餐與咖啡", body: "4隻蛋白 + 1杯凍齋啡！*注意：齋啡利尿不計入3000ml水分，並在此時登記體重與拍體態照！*" },
-        { id: "w1", time: "10:00", type: "water", title: "💧 工作補水 1/6 (350ml)", body: "3000ml 補水正式開始！利用水分加速咖啡因帶動的游離脂肪燃燒。" },
+        { id: "c4", time: "09:30", type: "breakfast", title: "🍳 減脂早餐與咖啡", body: "4隻蛋白 + 1杯凍齋啡！*注意：齋啡不計入3000ml水分。*" },
+        { id: "w1", time: "10:00", type: "water", title: "💧 工作補水 1/6 (350ml)", body: "3000ml 補水正式開始！利用水分加速燃脂。" },
         { id: "w2", time: "11:30", type: "water", title: "💧 工作補水 2/6 (350ml)", body: "起一身活動，補水第二杯。" },
-        { id: "s1", time: "13:00", type: "supplement", title: "🐟 隨餐補給 (維他命 B 群 & 魚油)", body: "食高蛋白午餐！隨餐服用維他命 B 群與魚油以達到完美吸收！" },
+        { id: "s1", time: "13:00", type: "supplement", title: "🐟 隨餐補給 (維他命 B 群 & 魚油)", body: "食高蛋白午餐！隨餐服用維他命 B 群與魚油！" },
         { id: "w3", time: "14:00", type: "water", title: "💧 工作補水 3/6 (350ml)", body: "飯後一杯水，提升營養運送效率。" },
         { id: "s2", time: "15:30", type: "supplement", title: "🥛 下午茶 Protein Shake", body: "飲第一杯 Protein Shake + 飲水 350ml (工作補水 4/6)！" },
         { id: "w4", time: "17:00", type: "water", title: "💧 工作補水 5/6 (350ml)", body: "下午保持高效代謝。" },
-        { id: "w5", time: "18:30", type: "water", title: "💧 工作補水 6/6 (350ml)", body: "放工前飲完最後一杯工作水！(辦公室 2100ml 達成)" },
-        { id: "s3", time: "21:30", type: "supplement", title: "💪 特訓後黃金修復", body: "重訓完即飲第二杯 Protein Shake + 5g 肌酸 (Creatine) 幫助肌肉飽和！" },
+        { id: "w5", time: "18:30", type: "water", title: "💧 工作補水 6/6 (350ml)", body: "放工前飲完最後一杯工作水！" },
+        { id: "s3", time: "21:30", type: "supplement", title: "💪 特訓後黃金修復", body: "重訓完即飲第二杯 Protein Shake + 5g 肌酸 (Creatine)！" },
         { id: "w6", time: "22:00", type: "water", title: "💧 晚間補水 (450ml)", body: "補充重訓流失的水分。" },
-        { id: "w7", time: "23:00", type: "water", title: "💧 睡前最後補水 (450ml)", body: "放下手機！睡眠不足會使皮質醇飆升儲存脂肪。飲完 3000ml 完美達標入睡！" }
+        { id: "w7", time: "23:00", type: "water", title: "💧 睡前最後補水 (450ml)", body: "放下手機準備入睡！全日 3000ml 完美達標！" }
     ];
+
+    function getActiveSchedule() {
+        let customTasks = JSON.parse(localStorage.getItem(`customTasks_Day_${currentPlanDay}`)) || [];
+        let deletedTaskIds = JSON.parse(localStorage.getItem(`deletedTasks_Day_${currentPlanDay}`)) || [];
+        
+        // 過濾掉被用戶刪除的任務
+        let currentList = defaultScheduleBase.filter(item => !deletedTaskIds.includes(item.id));
+        
+        // 合併新增的自定義任務
+        currentList = currentList.concat(customTasks);
+        
+        // 按時間先後排序
+        currentList.sort((a, b) => a.time.localeCompare(b.time));
+        return currentList;
+    }
 
     function updateDashboard() {
         if(currentPlanDay > 100) currentPlanDay = 1;
         if(currentPlanDay < 1) currentPlanDay = 100;
         localStorage.setItem('currentPlanDay', currentPlanDay);
         
-        // 更新進度條與階段預測
         document.getElementById("progressPercent").innerText = `${currentPlanDay}%`;
         document.getElementById("progressBar").style.width = `${currentPlanDay}%`;
         
         let phase = "", prediction = "";
         if(currentPlanDay <= 28) {
             phase = "第一階段：適應與初期燃脂期";
-            prediction = "💡 本月預測：糖原與水分快速排出身體，體脂每週預計穩步下降 0.3%-0.5%。星期一二因週末 Cheat Day 水分滯留體重回升屬正常，切勿焦慮！";
+            prediction = "💡 本月預測：糖原與水分快速排出，體脂每週預計穩步下降 0.3%-0.5%。星期一二體重因週末補水回升屬正常，切勿焦慮！";
         } else if(currentPlanDay <= 60) {
             phase = "第二階段：高效燃脂與肌肉合成期";
-            prediction = "💡 本月預測：代謝全面開啟！皮下脂肪變薄，體脂每週預計下降 0.4%，上腹肌邊緣線條在固定光源下開始隱約浮現。";
+            prediction = "💡 代謝全面開啟！皮下脂肪變薄，體脂每週下降 0.4%，上腹肌線條在固定光源下開始隱約浮現。";
         } else {
             phase = "第三階段：極致線條雕刻期";
-            prediction = "💡 本月預測：進入最後衝刺，頑固脂肪開始燃燒，體脂每週下降放緩至 0.2%，但腹肌線條將徹底清晰、肌肉拉絲度提高！";
+            prediction = "💡 進入最後衝刺，頑固脂肪全力燃燒，體脂下降放緩，但腹肌線條將徹底清晰、拉絲度提高！";
         }
         document.getElementById("currentPhaseLabel").innerText = phase;
         document.getElementById("phasePrediction").innerText = prediction;
@@ -220,9 +243,7 @@
         document.getElementById("dayDisplay").innerText = `100天計劃：第 ${currentPlanDay} 天`;
 
         let weekDayIndex = (currentPlanDay - 1) % 7; 
-        
-        // 檢查今天有沒有手動轉移大餐 (Cheat Day 跨日覆蓋)
-        let isTodayCheat = (weekDayIndex === 6); // 預設星期日
+        let isTodayCheat = (weekDayIndex === 6); 
         if (isCheatDayOverridden[currentPlanDay] !== undefined) {
             isTodayCheat = isCheatDayOverridden[currentPlanDay];
         }
@@ -232,11 +253,10 @@
         let train = trainingRoutines[weekDayIndex];
         let diet = weeklyDiets[dietIndex];
 
-        // 渲染重訓與餐單
         document.getElementById("hevyLink").href = hevyRoutines[weekDayIndex];
         if (isTodayCheat) {
             document.getElementById("trainingDetails").innerText = train.target;
-            document.getElementById("dietDetails").innerText = "🍕 【大餐彈性緩衝/Cheat Day】\n今晚可以放鬆享受一頓大餐！其餘餐單保持基本高蛋白。維持週熱量赤字，進度完全不受影響！";
+            document.getElementById("dietDetails").innerText = "🍕 【大餐彈性緩衝/Cheat Day】\n今晚可以放鬆享受一頓大餐！維持週熱量赤字，進度完全不受影響！";
             document.getElementById("prepTip").innerText = "今天放鬆日，不需要批量備餐。";
             document.getElementById("hevyLink").style.display = (weekDayIndex === 6) ? "none" : "block";
         } else {
@@ -246,11 +266,12 @@
             document.getElementById("hevyLink").style.display = (weekDayIndex === 6) ? "none" : "block";
         }
 
-        // 渲染 Checkpoints 時間表
+        // 渲染動態時間表
         let html = "";
         let checkData = JSON.parse(localStorage.getItem(`dayCheck_${currentPlanDay}`)) || {};
+        let activeSchedule = getActiveSchedule();
         
-        dailySchedule.forEach(item => {
+        activeSchedule.forEach(item => {
             if (item.time === "08:30" && (weekDayIndex === 5 || weekDayIndex === 6)) return; // 週末無 Cardio
             
             let isChecked = checkData[item.id] ? "checked" : "";
@@ -262,8 +283,11 @@
                     <div class="task-content">
                         <span class="task-title"><b>${item.title}</b></span><br>${item.body}
                     </div>
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="chk_${item.id}" onchange="toggleCheck('${item.id}')" ${isChecked}>
+                    <div class="controls-container">
+                        <button class="delete-task-btn" onclick="deleteTask('${item.id}')">🗑️</button>
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="chk_${item.id}" onchange="toggleCheck('${item.id}')" ${isChecked}>
+                        </div>
                     </div>
                 </div>
             `;
@@ -276,7 +300,48 @@
         document.getElementById("fatigueStatus").innerText = savedFatigue;
     }
 
-    // 打勾邏輯與本地記憶
+    // ➕ 動態直接在畫面上新增任務
+    function addCustomTask() {
+        let tInput = document.getElementById("customTime").value.trim();
+        let titleInput = document.getElementById("customTitle").value.trim();
+        
+        if(!tInput || !titleInput) { alert("請同時輸入時間（例如 14:30）和任務名稱！"); return; }
+        
+        let customTasks = JSON.parse(localStorage.getItem(`customTasks_Day_${currentPlanDay}`)) || [];
+        let newId = "custom_" + Date.now();
+        
+        customTasks.push({
+            id: newId,
+            time: tInput,
+            type: "custom",
+            title: "📝 " + titleInput,
+            body: "自定義清單任務"
+        });
+        
+        localStorage.setItem(`customTasks_Day_${currentPlanDay}`, JSON.stringify(customTasks));
+        document.getElementById("customTime").value = "";
+        document.getElementById("customTitle").value = "";
+        updateDashboard();
+    }
+
+    // 🗑️ 動態直接在畫面上刪除任務
+    function deleteTask(id) {
+        if(!confirm("確定要在今天的清單中刪除這項任務嗎？")) return;
+        
+        if(id.startsWith("custom_")) {
+            // 如果是自定義任務，直接從新增隊列移除
+            let customTasks = JSON.parse(localStorage.getItem(`customTasks_Day_${currentPlanDay}`)) || [];
+            customTasks = customTasks.filter(item => item.id !== id);
+            localStorage.setItem(`customTasks_Day_${currentPlanDay}`, JSON.stringify(customTasks));
+        } else {
+            // 如果是內置基礎任務，加入今日隱藏名單
+            let deletedTaskIds = JSON.parse(localStorage.getItem(`deletedTasks_Day_${currentPlanDay}`)) || [];
+            deletedTaskIds.push(id);
+            localStorage.setItem(`deletedTasks_Day_${currentPlanDay}`, JSON.stringify(deletedTaskIds));
+        }
+        updateDashboard();
+    }
+
     function toggleCheck(id) {
         let checkData = JSON.parse(localStorage.getItem(`dayCheck_${currentPlanDay}`)) || {};
         let checkBox = document.getElementById(`chk_${id}`);
@@ -292,13 +357,11 @@
         localStorage.setItem(`dayCheck_${currentPlanDay}`, JSON.stringify(checkData));
     }
 
-    // 疲勞度評估
     function setFatigue(status) {
         localStorage.setItem(`fatigue_${currentPlanDay}`, status);
         document.getElementById("fatigueStatus").innerText = status;
     }
 
-    // 大餐熱量跨日轉移功能
     function toggleCheatDay() {
         let currentStatus = isCheatDayOverridden[currentPlanDay];
         let weekDayIndex = (currentPlanDay - 1) % 7;
@@ -308,11 +371,10 @@
         isCheatDayOverridden[currentPlanDay] = newStatus;
         localStorage.setItem('isCheatDayOverridden', JSON.stringify(isCheatDayOverridden));
         
-        alert(`已將今日成功切換為：${newStatus ? "🍕 大餐緩衝日" : "🍗 嚴格燃脂日"}！`);
+        alert(`已將今日修改為：${newStatus ? "🍕 大餐緩衝日" : "🍗 嚴格燃脂日"}！`);
         updateDashboard();
     }
 
-    // 體重歷史管理
     function saveWeight() {
         let val = document.getElementById("weightInput").value;
         if(!val) return;
@@ -329,7 +391,6 @@
         document.getElementById("weightHistory").innerHTML = html || "暫無紀錄";
     }
 
-    // 照片牆安全本地化儲存 (Base64)
     function savePhoto() {
         const file = document.getElementById("photoInput").files[0];
         if (!file) return;
@@ -346,9 +407,7 @@
     function loadPhotoWall() {
         let photoData = JSON.parse(localStorage.getItem('photoHistoryLog')) || {};
         let html = "";
-        // 固定顯示 Day 1, Day 30, Day 60 與當天做對比牆
         let milestoneDays = [1, 30, 60, currentPlanDay];
-        // 去重
         milestoneDays = [...new Set(milestoneDays)].sort((a,b)=>a-b);
 
         milestoneDays.forEach(d => {
@@ -361,34 +420,22 @@
         document.getElementById("photoWall").innerHTML = html;
     }
 
-    // 🌙 午夜未完成檢討與警告系統
     function triggerMidnightCheck() {
         let checkData = JSON.parse(localStorage.getItem(`dayCheck_${currentPlanDay}`)) || {};
-        let weekDayIndex = (currentPlanDay - 1) % 7;
+        let activeSchedule = getActiveSchedule();
         let missedTasks = [];
 
-        dailySchedule.forEach(item => {
-            if (item.time === "08:30" && (weekDayIndex === 5 || weekDayIndex === 6)) return;
+        activeSchedule.forEach(item => {
             if (!checkData[item.id]) {
                 missedTasks.push(item.title);
             }
         });
 
         if (missedTasks.length === 0) {
-            alert("🔥 完美！今日所有任務全部打勾完成！肌肉正在全速合成，體脂瘋狂燃燒，你是最棒的！");
+            alert("🔥 完美！今日所有自訂與預設清單全部打勾完成！為你的自律鼓掌！");
         } else {
-            let report = `⚠️ 警告！今日第 ${currentPlanDay} 天有以下項目未完成：\n\n` + missedTasks.map(t=>`• ${t}`).join('\n') + "\n\n";
-            report += "🚨 營養師與教練嚴重後果評估：\n";
-            
-            let hasWater = missedTasks.some(t => t.includes("補水"));
-            let hasSupplement = missedTasks.some(t => t.includes("Supplement") || t.includes("補給"));
-            let hasCardio = missedTasks.some(t => t.includes("Cardio"));
-
-            if (hasWater) report += "- 缺水分：身體燃脂速率在未來24小時將驟降10-15%，皮質醇水腫會加劇，腹肌線條變模糊！\n";
-            if (hasSupplement) report += "- 缺補給/Protein：肌肉修復缺乏原料，明天重訓力量恐會下降，面臨掉肌肉風險！\n";
-            if (hasCardio) report += "- 缺有氧：今日熱量赤字未達標，頑固脂肪消耗進度延遲 1-2 天！\n";
-
-            report += "\n💪 明天立刻恢復紀律，這100天我們絕對不向藉口妥協！";
+            let report = `⚠️ 檢討！今日第 ${currentPlanDay} 天有以下項目未打勾：\n\n` + missedTasks.map(t=>`• ${t}`).join('\n') + "\n\n";
+            report += "🚨 紀律提示：\n未完成的項目會延遲身體燃脂與修復效率，明天起床立刻重拾狀態，加油！";
             alert(report);
         }
     }
@@ -399,37 +446,25 @@
     }
 
     function requestPermission() {
-        if (!("Notification" in window)) { alert("請在 iPhone 桌面打開此 App 才能啟動通知功能。"); return; }
+        if (!("Notification" in window)) { alert("請在 iPhone 桌面打開此 App 才能啟動通知。"); return; }
         Notification.requestPermission().then(permission => {
-            if (permission === "granted") {
-                alert("終極 V4 互動版通知系統已啟動！");
-            }
+            if (permission === "granted") { alert("通知系統同步成功！"); }
         });
     }
 
-    // 每分鐘背景檢查與自動定時通知
     setInterval(() => {
         const now = new Date();
         const curTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-        const weekDayIndex = (currentPlanDay - 1) % 7;
+        let activeSchedule = getActiveSchedule();
 
-        dailySchedule.forEach(item => {
-            if (item.time === "08:30" && (weekDayIndex === 5 || weekDayIndex === 6)) return;
-
+        activeSchedule.forEach(item => {
             if (item.time === curTime && Notification.permission === "granted") {
-                new Notification(item.title, { body: item.body });
+                new Notification(item.title, { body: item.body || "動態定製任務提示" });
             }
         });
 
-        // 每天晚上 23:59 自動彈出檢討報告
-        if (curTime === "23:59") {
-            triggerMidnightCheck();
-        }
-
-        if (curTime === "00:00") {
-            currentPlanDay++;
-            updateDashboard();
-        }
+        if (curTime === "23:59") { triggerMidnightCheck(); }
+        if (curTime === "00:00") { currentPlanDay++; updateDashboard(); }
     }, 60000);
 
     window.onload = updateDashboard;
