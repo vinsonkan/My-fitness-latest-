@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>100天增肌減脂終極全能教練 V4</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="100天終極App">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+    <style>
+        :root {
+            --safe-top: env(safe-area-inset-top, 20px);
+            --safe-bottom: env(safe-area-inset-bottom, 20px);
+        }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background-color: #121212; 
+            color: #e0e0e0; 
+            margin: 0; 
+            padding: calc(var(--safe-top) + 15px) 15px calc(var(--safe-bottom) + 15px) 15px;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .container { max-width: 600px; margin: 0 auto; background: #1e1e1e; padding: 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        h1 { text-align: center; color: #ff9f43; font-size: 1.4em; margin: 5px 0; }
+        
+        /* 進度條樣式 */
+        .progress-container { background: #2d2d2d; border-radius: 10px; padding: 12px; margin-bottom: 15px; }
+        .progress-bar-bg { background: #444; width: 100%; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 5px; }
+        .progress-bar-fill { background: linear-gradient(90deg, #10ac84, #00d2d3); width: 1%; height: 100%; transition: width 0.5s ease; }
+        .phase-text { font-size: 0.8em; color: #b2bec3; margin-top: 6px; text-align: center; font-style: italic; }
+
+        .day-counter { background: linear-gradient(45deg, #ee5253, #feca57); padding: 12px; border-radius: 12px; text-align: center; font-size: 1.2em; font-weight: bold; color: white; margin-bottom: 15px; }
+        .routine-box { background: #2d2d2d; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 5px solid #10ac84; }
+        
+        /* 行動按鈕 */
+        .hevy-btn { display: inline-block; width: 100%; text-align: center; background: #00a8ff; color: white; padding: 10px; border-radius: 8px; font-weight: bold; text-decoration: none; margin-top: 10px; box-sizing: border-box; }
+        .flex-row { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 15px; }
+        button.action-btn { flex: 1; padding: 10px; font-size: 0.85em; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
+        
+        /* 時間表與打勾互動 */
+        .time-slot { display: flex; align-items: center; padding: 12px; background: #252525; margin-bottom: 6px; border-radius: 8px; border-right: 3px solid transparent; transition: all 0.3s ease; }
+        .time-slot.completed { opacity: 0.4; border-right-color: #10ac84 !important; }
+        .time-slot.completed .task-title { text-decoration: line-through; }
+        .time-slot.water { border-right-color: #54a0ff; }
+        .time-slot.supplement { border-right-color: #ff9f43; }
+        .time-slot.cardio { border-right-color: #ff6b6b; }
+        .time-slot.breakfast { border-right-color: #ffeaa7; }
+        
+        .time { color: #ff9f43; font-weight: bold; min-width: 60px; font-size: 0.95em; }
+        .task-content { flex-grow: 1; margin-left: 10px; font-size: 0.85em; line-height: 1.4; }
+        .checkbox-container { min-width: 30px; text-align: right; }
+        .checkbox-container input { width: 20px; height: 20px; accent-color: #10ac84; }
+
+        /* 數據登記 */
+        .tracker-section { background: #2d2d2d; padding: 12px; border-radius: 10px; margin-bottom: 15px; }
+        .tracker-section h4 { margin: 0 0 10px 0; font-size: 0.95em; color: #ff9f43; }
+        .input-group { display: flex; gap: 10px; margin-bottom: 10px; }
+        .input-group input[type="number"] { flex: 1; background: #1a1a1a; border: 1px solid #444; color: white; padding: 8px; border-radius: 6px; }
+        .input-group button, .file-label { background: #10ac84; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; font-size: 0.85em; cursor: pointer; text-align: center; }
+        
+        /* 照片牆 */
+        .photo-wall { display: flex; gap: 8px; overflow-x: auto; padding: 5px 0; }
+        .photo-slot { min-width: 75px; height: 100px; background: #1a1a1a; border-radius: 6px; overflow: hidden; position: relative; border: 1px dashed #555; text-align: center; font-size: 0.7em; color: #888; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .photo-slot img { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; }
+        
+        /* 歷史體重紀錄 */
+        .weight-history { max-height: 80px; overflow-y: auto; font-size: 0.8em; color: #b2bec3; background: #1a1a1a; padding: 6px; border-radius: 6px; }
+
+        .day-btn-container { display: flex; justify-content: space-between; margin-top: 15px; }
+        .day-btn { width: 48%; background: #3d3d3d; padding: 10px; font-size: 0.9em; color: white; border: none; border-radius: 8px; }
+        .meal-prep-tip { background: #222f3e; padding: 10px; border-radius: 8px; font-size: 0.85em; color: #00d2d3; margin-bottom: 15px; text-align: center; border: 1px dashed #00d2d3; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🏋️‍♂️ 終極全能教練 & 營養師 V4</h1>
+    
+    <div class="progress-container">
+        <div style="display: flex; justify-content: space-between; font-size: 0.85em;">
+            <span>100天總進度：<b id="progressPercent">0%</b></span>
+            <span id="currentPhaseLabel">適應期</span>
+        </div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressBar"></div></div>
+        <div class="phase-text" id="phasePrediction">載入中階段預測...</div>
+    </div>
+
+    <div class="day-counter" id="dayDisplay">100天計劃：第 1 天</div>
+    
+    <div class="flex-row">
+        <button class="action-btn" style="background:#ff9f43;" onclick="requestPermission()">🔔 開啟智能通知</button>
+        <button class="action-btn" style="background:#ee5253;" onclick="triggerMidnightCheck()">🌙 手動午夜結算</button>
+        <button class="action-btn" style="background:#2ed573;" onclick="toggleCheatDay()">🍕 轉移大餐/Cheat</button>
+    </div>
+
+    <div class="tracker-section">
+        <h4>📸 晨起空腹體態相冊 (儲存於本機)</h4>
+        <div class="input-group">
+            <label class="file-label" style="width:100%">
+                ➕ 上傳/拍攝今日體態照片
+                <input type="file" accept="image/*" id="photoInput" style="display:none;" onchange="savePhoto()">
+            </label>
+        </div>
+        <div class="photo-wall" id="photoWall"></div>
+    </div>
+
+    <div class="tracker-section">
+        <h4>⚖️ 每日體重登記追蹤</h4>
+        <div class="input-group">
+            <input type="number" step="0.1" id="weightInput" placeholder="輸入今日體重 (kg)">
+            <button onclick="saveWeight()">紀錄體重</button>
+        </div>
+        <div class="weight-history" id="weightHistory">暫無紀錄</div>
+    </div>
+
+    <div class="meal-prep-tip">
+        💡 <b>每3天批量化備餐 (Batch Cook) 任務：</b><span id="prepTip">正在規劃食材...</span>
+    </div>
+
+    <div class="routine-box">
+        <h3>📅 今日主要訓練 (重訓與 Deload 自評)</h3>
+        <p id="trainingDetails">載入中...</p>
+        <div style="display:flex; gap:5px; margin-top:5px;">
+            <button onclick="setFatigue('👍 狀態良好，全面推進！')" style="flex:1; background:#10ac84; color:white; border:none; padding:5px; border-radius:4px; font-size:0.75em;">👍良好</button>
+            <button onclick="setFatigue('😐 狀態普通，安全完成。')" style="flex:1; background:#ff9f43; color:white; border:none; padding:5px; border-radius:4px; font-size:0.75em;">😐普通</button>
+            <button onclick="setFatigue('🤮 疲勞度高：教練提示連續兩天按此將觸發 Deload 減量。')" style="flex:1; background:#ee5253; color:white; border:none; padding:5px; border-radius:4px; font-size:0.75em;">🤮疲勞</button>
+        </div>
+        <p id="fatigueStatus" style="font-size:0.8em; color:#00d2d3; margin:5px 0 0 0; font-style:italic;"></p>
+        <a id="hevyLink" class="hevy-btn" target="_blank" href="#">🔥 一鍵直通今日 Hevy 課表網頁</a>
+    </div>
+
+    <div class="routine-box" style="border-left-color: #ff9f43;">
+        <h3>🥗 今日客製化餐單 (無青瓜/蕃茄)</h3>
+        <p id="dietDetails">載入中...</p>
+    </div>
+
+    <h3>⏰ 今日全功能打勾 Check Point</h3>
+    <div id="timeline"></div>
+
+    <div class="day-btn-container">
+        <button class="day-btn" onclick="adjustDay(-1)">⬅️ 前一天</button>
+        <button class="day-btn" onclick="adjustDay(1)">後一天 ➡️</button>
+    </div>
+</div>
+
+<script>
+    let currentPlanDay = parseInt(localStorage.getItem('currentPlanDay')) || 1;
+    let isCheatDayOverridden = JSON.parse(localStorage.getItem('isCheatDayOverridden')) || {};
+
+    const hevyRoutines = [
+        "https://hevy.com/routine/b7kUTEDJxP1", // 一
+        "https://hevy.com/routine/EOsCzruataJ", // 二
+        "https://hevy.com/routine/cWP6T60TzFo", // 三
+        "https://hevy.com/routine/NFp45TmQiC6", // 四
+        "https://hevy.com/routine/eaynAIY5nZu", // 五
+        "https://hevy.com/routine/BLQcuQirisY", // 六
+        "#" // 日
+    ];
+
+    const trainingRoutines = [
+        { type: "星期一：胸部 + 三頭肌 (Push)", target: "🏋️‍♂️ 依據 Hevy 課表特訓！\n🏃 08:30 前往健身室完成 30 分鐘空腹 Cardio。" },
+        { type: "星期二：背部 + 二頭肌 (Pull)", target: "🏋️‍♂️ 依據 Hevy 課表特訓！\n🏃 08:30 前往健身室完成 30 分鐘空腹 Cardio。" },
+        { type: "星期三：腿部 + 肩部 (Legs)", target: "🏋️‍♂️ 依據 Hevy 課表特訓！\n🏃 08:30 前往健身室完成 30 分鐘空腹 Cardio。" },
+        { type: "星期四：胸部 + 三頭肌 (Push)", target: "🏋️‍♂️ 依據 Hevy 課表特訓！\n🏃 08:30 前往健身室完成 30 分鐘空腹 Cardio。" },
+        { type: "星期五：背部 + 二頭肌 (Pull)", target: "🏋️‍♂️ 依據 Hevy 課表特訓！\n🏃 08:30 前往健身室完成 30 分鐘空腹 Cardio。" },
+        { type: "星期六：腿部 + 肩部 (Legs)", target: "🏋️‍♂️ 依據 Hevy 課表重訓！\n🧘 週末無 Cardio，全力突破大重量！" },
+        { type: "星期日：完全休息日 (Rest Day)", target: "🧘 今日全身肌肉修復。做 30 分鐘滾筒放鬆或拉筋伸展。" }
+    ];
+
+    const weeklyDiets = [
+        { prep: "【日/三晚上備餐】煎雞胸肉切塊 + 水煮西蘭花 + 蒸蕃薯（分裝多盒，出門只需微波5分鐘）", menu: "☀️ 午餐：去皮海南雞飯（少飯）+ 白灼菜心\n🌙 晚餐：香煎雞胸肉 + 西蘭花 + 蒸蕃薯" },
+        { prep: "【日/三晚上備餐】蒜蓉炒牛肉片 + 炒雜菇 + 糙米飯（批量備好，節省工作日時間）", menu: "☀️ 午餐：滑蛋蝦仁飯（少飯）+ 蒜茸西蘭花\n🌙 晚餐：黑椒牛柳炒雜菇 + 糙米飯" },
+        { prep: "【日/三晚上備餐】香煎三文魚扒 + 水煮蘆筍 + 烤南瓜（高品質脂肪備餐）", menu: "☀️ 午餐：外食選擇 - 切雞燒肉飯（去皮/少飯）\n🌙 晚餐：香煎三文魚扒 + 水煮蘆筍 + 烤南瓜" },
+        { prep: "【日/三晚上備餐】蒸鱸魚菲力 + 炒椰菜 + 蒸薯仔（清淡高蛋白循環）", menu: "☀️ 午餐：鮮牛肉湯米粉 + 灼芥蘭（不加羗蔥）\n🌙 晚餐：清蒸鱸魚菲力 + 清炒椰菜 + 蒸薯仔" }
+    ];
+
+    const dailySchedule = [
+        { id: "c1", time: "07:00", type: "commute", title: "⏰ 起床準備", body: "準備出門！今天也是充满力量的一天。" },
+        { id: "c2", time: "07:30", type: "commute", title: "🚶 準時出門口", body: "準時出發去公司附近的健身室。" },
+        { id: "c3", time: "08:30", type: "cardio", title: "🏃 30分鐘空腹 Cardio", body: "抵達健身室！開始有氧燃脂（週六日自動跳過）。" },
+        { id: "c4", time: "09:30", type: "breakfast", title: "🍳 減脂早餐與咖啡", body: "4隻蛋白 + 1杯凍齋啡！*注意：齋啡利尿不計入3000ml水分，並在此時登記體重與拍體態照！*" },
+        { id: "w1", time: "10:00", type: "water", title: "💧 工作補水 1/6 (350ml)", body: "3000ml 補水正式開始！利用水分加速咖啡因帶動的游離脂肪燃燒。" },
+        { id: "w2", time: "11:30", type: "water", title: "💧 工作補水 2/6 (350ml)", body: "起一身活動，補水第二杯。" },
+        { id: "s1", time: "13:00", type: "supplement", title: "🐟 隨餐補給 (維他命 B 群 & 魚油)", body: "食高蛋白午餐！隨餐服用維他命 B 群與魚油以達到完美吸收！" },
+        { id: "w3", time: "14:00", type: "water", title: "💧 工作補水 3/6 (350ml)", body: "飯後一杯水，提升營養運送效率。" },
+        { id: "s2", time: "15:30", type: "supplement", title: "🥛 下午茶 Protein Shake", body: "飲第一杯 Protein Shake + 飲水 350ml (工作補水 4/6)！" },
+        { id: "w4", time: "17:00", type: "water", title: "💧 工作補水 5/6 (350ml)", body: "下午保持高效代謝。" },
+        { id: "w5", time: "18:30", type: "water", title: "💧 工作補水 6/6 (350ml)", body: "放工前飲完最後一杯工作水！(辦公室 2100ml 達成)" },
+        { id: "s3", time: "21:30", type: "supplement", title: "💪 特訓後黃金修復", body: "重訓完即飲第二杯 Protein Shake + 5g 肌酸 (Creatine) 幫助肌肉飽和！" },
+        { id: "w6", time: "22:00", type: "water", title: "💧 晚間補水 (450ml)", body: "補充重訓流失的水分。" },
+        { id: "w7", time: "23:00", type: "water", title: "💧 睡前最後補水 (450ml)", body: "放下手機！睡眠不足會使皮質醇飆升儲存脂肪。飲完 3000ml 完美達標入睡！" }
+    ];
+
+    function updateDashboard() {
+        if(currentPlanDay > 100) currentPlanDay = 1;
+        if(currentPlanDay < 1) currentPlanDay = 100;
+        localStorage.setItem('currentPlanDay', currentPlanDay);
+        
+        // 更新進度條與階段預測
+        document.getElementById("progressPercent").innerText = `${currentPlanDay}%`;
+        document.getElementById("progressBar").style.width = `${currentPlanDay}%`;
+        
+        let phase = "", prediction = "";
+        if(currentPlanDay <= 28) {
+            phase = "第一階段：適應與初期燃脂期";
+            prediction = "💡 本月預測：糖原與水分快速排出身體，體脂每週預計穩步下降 0.3%-0.5%。星期一二因週末 Cheat Day 水分滯留體重回升屬正常，切勿焦慮！";
+        } else if(currentPlanDay <= 60) {
+            phase = "第二階段：高效燃脂與肌肉合成期";
+            prediction = "💡 本月預測：代謝全面開啟！皮下脂肪變薄，體脂每週預計下降 0.4%，上腹肌邊緣線條在固定光源下開始隱約浮現。";
+        } else {
+            phase = "第三階段：極致線條雕刻期";
+            prediction = "💡 本月預測：進入最後衝刺，頑固脂肪開始燃燒，體脂每週下降放緩至 0.2%，但腹肌線條將徹底清晰、肌肉拉絲度提高！";
+        }
+        document.getElementById("currentPhaseLabel").innerText = phase;
+        document.getElementById("phasePrediction").innerText = prediction;
+
+        document.getElementById("dayDisplay").innerText = `100天計劃：第 ${currentPlanDay} 天`;
+
+        let weekDayIndex = (currentPlanDay - 1) % 7; 
+        
+        // 檢查今天有沒有手動轉移大餐 (Cheat Day 跨日覆蓋)
+        let isTodayCheat = (weekDayIndex === 6); // 預設星期日
+        if (isCheatDayOverridden[currentPlanDay] !== undefined) {
+            isTodayCheat = isCheatDayOverridden[currentPlanDay];
+        }
+
+        const currentWeekNum = Math.floor((currentPlanDay - 1) / 7) + 1;
+        const dietIndex = (currentWeekNum - 1) % weeklyDiets.length;
+        let train = trainingRoutines[weekDayIndex];
+        let diet = weeklyDiets[dietIndex];
+
+        // 渲染重訓與餐單
+        document.getElementById("hevyLink").href = hevyRoutines[weekDayIndex];
+        if (isTodayCheat) {
+            document.getElementById("trainingDetails").innerText = train.target;
+            document.getElementById("dietDetails").innerText = "🍕 【大餐彈性緩衝/Cheat Day】\n今晚可以放鬆享受一頓大餐！其餘餐單保持基本高蛋白。維持週熱量赤字，進度完全不受影響！";
+            document.getElementById("prepTip").innerText = "今天放鬆日，不需要批量備餐。";
+            document.getElementById("hevyLink").style.display = (weekDayIndex === 6) ? "none" : "block";
+        } else {
+            document.getElementById("trainingDetails").innerText = train.target;
+            document.getElementById("dietDetails").innerText = diet.menu;
+            document.getElementById("prepTip").innerText = diet.prep;
+            document.getElementById("hevyLink").style.display = (weekDayIndex === 6) ? "none" : "block";
+        }
+
+        // 渲染 Checkpoints 時間表
+        let html = "";
+        let checkData = JSON.parse(localStorage.getItem(`dayCheck_${currentPlanDay}`)) || {};
+        
+        dailySchedule.forEach(item => {
+            if (item.time === "08:30" && (weekDayIndex === 5 || weekDayIndex === 6)) return; // 週末無 Cardio
+            
+            let isChecked = checkData[item.id] ? "checked" : "";
+            let completedClass = checkData[item.id] ? "completed" : "";
+            
+            html += `
+                <div class="time-slot ${item.type} ${completedClass}" id="slot_${item.id}">
+                    <span class="time">${item.time}</span>
+                    <div class="task-content">
+                        <span class="task-title"><b>${item.title}</b></span><br>${item.body}
+                    </div>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="chk_${item.id}" onchange="toggleCheck('${item.id}')" ${isChecked}>
+                    </div>
+                </div>
+            `;
+        });
+        document.getElementById("timeline").innerHTML = html;
+        loadWeightHistory();
+        loadPhotoWall();
+        
+        let savedFatigue = localStorage.getItem(`fatigue_${currentPlanDay}`) || "";
+        document.getElementById("fatigueStatus").innerText = savedFatigue;
+    }
+
+    // 打勾邏輯與本地記憶
+    function toggleCheck(id) {
+        let checkData = JSON.parse(localStorage.getItem(`dayCheck_${currentPlanDay}`)) || {};
+        let checkBox = document.getElementById(`chk_${id}`);
+        let slot = document.getElementById(`slot_${id}`);
+        
+        if(checkBox.checked) {
+            checkData[id] = true;
+            slot.classList.add("completed");
+        } else {
+            checkData[id] = false;
+            slot.classList.remove("completed");
+        }
+        localStorage.setItem(`dayCheck_${currentPlanDay}`, JSON.stringify(checkData));
+    }
+
+    // 疲勞度評估
+    function setFatigue(status) {
+        localStorage.setItem(`fatigue_${currentPlanDay}`, status);
+        document.getElementById("fatigueStatus").innerText = status;
+    }
+
+    // 大餐熱量跨日轉移功能
+    function toggleCheatDay() {
+        let currentStatus = isCheatDayOverridden[currentPlanDay];
+        let weekDayIndex = (currentPlanDay - 1) % 7;
+        let defaultStatus = (weekDayIndex === 6);
+        
+        let newStatus = currentStatus !== undefined ? !currentStatus : !defaultStatus;
+        isCheatDayOverridden[currentPlanDay] = newStatus;
+        localStorage.setItem('isCheatDayOverridden', JSON.stringify(isCheatDayOverridden));
+        
+        alert(`已將今日成功切換為：${newStatus ? "🍕 大餐緩衝日" : "🍗 嚴格燃脂日"}！`);
+        updateDashboard();
+    }
+
+    // 體重歷史管理
+    function saveWeight() {
+        let val = document.getElementById("weightInput").value;
+        if(!val) return;
+        let history = JSON.parse(localStorage.getItem('weightHistoryLog')) || [];
+        history.unshift({ day: currentPlanDay, weight: val, date: new Date().toLocaleDateString() });
+        localStorage.setItem('weightHistoryLog', JSON.stringify(history));
+        document.getElementById("weightInput").value = "";
+        loadWeightHistory();
+    }
+
+    function loadWeightHistory() {
+        let history = JSON.parse(localStorage.getItem('weightHistoryLog')) || [];
+        let html = history.map(item => `<div>第 ${item.day} 天 (${item.date}): <b>${item.weight} kg</b></div>`).join('');
+        document.getElementById("weightHistory").innerHTML = html || "暫無紀錄";
+    }
+
+    // 照片牆安全本地化儲存 (Base64)
+    function savePhoto() {
+        const file = document.getElementById("photoInput").files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onloadend = function () {
+            let photoData = JSON.parse(localStorage.getItem('photoHistoryLog')) || {};
+            photoData[currentPlanDay] = reader.result;
+            localStorage.setItem('photoHistoryLog', JSON.stringify(photoData));
+            loadPhotoWall();
+        }
+        reader.readAsDataURL(file);
+    }
+
+    function loadPhotoWall() {
+        let photoData = JSON.parse(localStorage.getItem('photoHistoryLog')) || {};
+        let html = "";
+        // 固定顯示 Day 1, Day 30, Day 60 與當天做對比牆
+        let milestoneDays = [1, 30, 60, currentPlanDay];
+        // 去重
+        milestoneDays = [...new Set(milestoneDays)].sort((a,b)=>a-b);
+
+        milestoneDays.forEach(d => {
+            if (photoData[d]) {
+                html += `<div class="photo-slot"><img src="${photoData[d]}"><span style="position:absolute; bottom:0; background:rgba(0,0,0,0.7); width:100%; color:white; font-size:10px;">Day ${d}</span></div>`;
+            } else {
+                html += `<div class="photo-slot">無 Day ${d}<br>照片</div>`;
+            }
+        });
+        document.getElementById("photoWall").innerHTML = html;
+    }
+
+    // 🌙 午夜未完成檢討與警告系統
+    function triggerMidnightCheck() {
+        let checkData = JSON.parse(localStorage.getItem(`dayCheck_${currentPlanDay}`)) || {};
+        let weekDayIndex = (currentPlanDay - 1) % 7;
+        let missedTasks = [];
+
+        dailySchedule.forEach(item => {
+            if (item.time === "08:30" && (weekDayIndex === 5 || weekDayIndex === 6)) return;
+            if (!checkData[item.id]) {
+                missedTasks.push(item.title);
+            }
+        });
+
+        if (missedTasks.length === 0) {
+            alert("🔥 完美！今日所有任務全部打勾完成！肌肉正在全速合成，體脂瘋狂燃燒，你是最棒的！");
+        } else {
+            let report = `⚠️ 警告！今日第 ${currentPlanDay} 天有以下項目未完成：\n\n` + missedTasks.map(t=>`• ${t}`).join('\n') + "\n\n";
+            report += "🚨 營養師與教練嚴重後果評估：\n";
+            
+            let hasWater = missedTasks.some(t => t.includes("補水"));
+            let hasSupplement = missedTasks.some(t => t.includes("Supplement") || t.includes("補給"));
+            let hasCardio = missedTasks.some(t => t.includes("Cardio"));
+
+            if (hasWater) report += "- 缺水分：身體燃脂速率在未來24小時將驟降10-15%，皮質醇水腫會加劇，腹肌線條變模糊！\n";
+            if (hasSupplement) report += "- 缺補給/Protein：肌肉修復缺乏原料，明天重訓力量恐會下降，面臨掉肌肉風險！\n";
+            if (hasCardio) report += "- 缺有氧：今日熱量赤字未達標，頑固脂肪消耗進度延遲 1-2 天！\n";
+
+            report += "\n💪 明天立刻恢復紀律，這100天我們絕對不向藉口妥協！";
+            alert(report);
+        }
+    }
+
+    function adjustDay(amount) {
+        currentPlanDay += amount;
+        updateDashboard();
+    }
+
+    function requestPermission() {
+        if (!("Notification" in window)) { alert("請在 iPhone 桌面打開此 App 才能啟動通知功能。"); return; }
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                alert("終極 V4 互動版通知系統已啟動！");
+            }
+        });
+    }
+
+    // 每分鐘背景檢查與自動定時通知
+    setInterval(() => {
+        const now = new Date();
+        const curTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        const weekDayIndex = (currentPlanDay - 1) % 7;
+
+        dailySchedule.forEach(item => {
+            if (item.time === "08:30" && (weekDayIndex === 5 || weekDayIndex === 6)) return;
+
+            if (item.time === curTime && Notification.permission === "granted") {
+                new Notification(item.title, { body: item.body });
+            }
+        });
+
+        // 每天晚上 23:59 自動彈出檢討報告
+        if (curTime === "23:59") {
+            triggerMidnightCheck();
+        }
+
+        if (curTime === "00:00") {
+            currentPlanDay++;
+            updateDashboard();
+        }
+    }, 60000);
+
+    window.onload = updateDashboard;
+</script>
+
+</body>
+</html>
